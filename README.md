@@ -1,21 +1,23 @@
-# This file is used to develop the sql skill.
+## This file is used to develop the sql skill.
 
-Schemas, Questions & Solutions for SQL Exercising,
+Schemas, Questions & Solutions for SQL Coding Technique
 
 ## Introduction
 The schemas and questions are
 
-[1] from Wikibook **SQL Exercises** [https://en.wikibooks.org/wiki/SQL_Exercises]. Solutions are me (exercise 1-8).
+[1] from Wikibook **SQL Exercises** [https://en.wikibooks.org/wiki/SQL_Exercises]. Solutions are from me .
+
+[2] The idea of create this repo is inspired mostly by **XD-DENG's repo**[https://github.com/XD-DENG/SQL-exercise]. However, the content are very different.
 
 
 
 ## Repository Structure
 The repo structure is like below:
 ```
-SQL-exercise
-└───SQL_exercise_1
+SQL-Skill_Development
+└───SQL_section_1
 └───......
-└───SQL_exercise_*
+└───SQL_section_*
     │   *_schema_figure.png
     │   *_build_schema.sql
     │   *_questions_and_solutions.sql
@@ -23,6 +25,3 @@ SQL-exercise
 └───......
 
 ```
-
-## License
-Please note this repostory is under the Creative Commons Attribution-ShareAlike License[https://creativecommons.org/licenses/by-sa/3.0/].
