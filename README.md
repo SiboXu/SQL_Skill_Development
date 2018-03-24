@@ -14,7 +14,7 @@ The schemas and questions are
 ## Repository Structure
 The repo structure is like below:
 ```
-SQL-Skill_Development
+SQL_Skill_Development
 └───SQL_section_1
 └───......
 └───SQL_section_*
