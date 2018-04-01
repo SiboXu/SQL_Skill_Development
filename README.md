@@ -19,7 +19,7 @@ SQL_Skill_Development
 └───......
 └───SQL_section_*
     │   *_schema_figure.png
-    │   *_build_schema.sql
+    │   *_README.md
     │   *_questions_and_solutions.sql
 
 └───......
