@@ -1,0 +1,114 @@
+Create database Provider;
+Use Provider;
+
+
+CREATE TABLE Pieces (
+ Code INTEGER PRIMARY KEY NOT NULL,
+ Name TEXT NOT NULL
+ );
+CREATE TABLE Providers (
+ Code VARCHAR(40)
+ PRIMARY KEY NOT NULL,
+ Name TEXT NOT NULL
+ );
+CREATE TABLE Provides (
+ Piece INTEGER,
+ FOREIGN KEY (Piece) REFERENCES Pieces(Code),
+ Provider VARCHAR(40),
+ FOREIGN KEY (Provider) REFERENCES Providers(Code),
+ Price INTEGER NOT NULL,
+ PRIMARY KEY(Piece, Provider)
+ );
+
+
+INSERT INTO Providers(Code, Name) VALUES('HAL','Clarke Enterprises');
+INSERT INTO Providers(Code, Name) VALUES('RBT','Susan Calvin Corp.');
+INSERT INTO Providers(Code, Name) VALUES('TNBC','Skellington Supplies');
+
+INSERT INTO Pieces(Code, Name) VALUES(1,'Sprocket');
+INSERT INTO Pieces(Code, Name) VALUES(2,'Screw');
+INSERT INTO Pieces(Code, Name) VALUES(3,'Nut');
+INSERT INTO Pieces(Code, Name) VALUES(4,'Bolt');
+
+INSERT INTO Provides(Piece, Provider, Price) VALUES(1,'HAL',10);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(1,'RBT',15);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(2,'HAL',20);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(2,'RBT',15);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(2,'TNBC',14);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(3,'RBT',50);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(3,'TNBC',45);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(4,'HAL',5);
+INSERT INTO Provides(Piece, Provider, Price) VALUES(4,'RBT',7);
+
+-- 5.1 Select the name of all the pieces.
+-- 5.2  Select all the providers' data.
+-- 5.3 Obtain the average price of each piece (show only the piece code and the average price).
+-- 5.4  Obtain the names of all providers who supply piece 1.
+-- 5.5 Select the name of pieces provided by provider with code "HAL".
+-- 5.6
+-- Interesting and important one.
+-- For each piece, find the most expensive offering of that piece and include the piece name, provider name, and price
+-- (note that there could be two providers who supply the same piece at the most expensive price).
+-- ---------------------------------------------
+-- 5.7 Add an entry to the database to indicate that "Skellington Supplies" (code "TNBC") will provide sprockets (code "1") for 7 cents each.
+-- 5.8 Increase all prices by one cent.
+-- 5.9 Update the database to reflect that "Susan Calvin Corp." (code "RBT") will not supply bolts (code 4).
+-- 5.10 Update the database to reflect that "Susan Calvin Corp." (code "RBT") will not supply any pieces
+    -- (the provider should still remain in the database).
+
+-- 5.1 Select the name of all the pieces.
+select name from pieces;
+
+-- 5.2  Select all the providers' data.
+select * from providers;
+
+-- 5.3 Obtain the average price of each piece (show only the piece code and the average price).
+select pi.code, avg(pr.price) as avg_price from pieces pi join provides pr on pi.code=pr.piece group by pi.code;
+
+-- 5.4  Obtain the names of all providers who supply piece 1.
+select pro.name from (select * from pieces pi join provides pr on pi.code=pr.piece) pp
+join providers pro on pp.provider = pro.code where pp.code = 1;
+
+-- 5.5 Select the name of pieces provided by provider with code "HAL".
+select pp.name from (select * from pieces pi join provides pr on pi.code=pr.piece) pp
+join providers pro on pp.provider = pro.code where pro.code = 'HAL';
+
+-- 5.6
+-- Interesting and important one.
+-- For each piece, find the most expensive offering of that piece and include the piece name, provider name, and price
+-- (note that there could be two providers who supply the same piece at the most expensive price).
+select pp.name, pro.name, pp.price from (select * from pieces pi join provides pr on pi.code=pr.piece) pp
+join providers pro on pp.provider = pro.code where pp.code in
+(select code from (select code, max(price) as maxp from pieces pi join provides pr on pi.code=pr.piece group by code));
+
+select pp1.name as picename, ppro.name as proname, pp1.price
+from (select * from provides p1 join (select name, code, max(price) as maxp
+from pieces pi join provides pr on pi.code=pr.piece group by code) p2 on p1.piece = p2.code having price = maxp) pp1
+join providers ppro on pp1.provider = ppro.code;
+
+
+SELECT Pieces.Name, Providers.Name, Price
+  FROM Pieces INNER JOIN Provides ON Pieces.Code = Piece
+              INNER JOIN Providers ON Providers.Code = Provider
+  WHERE Price =
+  (
+    SELECT MAX(Price) FROM Provides
+    WHERE Piece = Pieces.Code
+  );
+SELECT MAX(Price) FROM Provides, Pieces
+WHERE Piece = Pieces.Code;
+
+-- 5.7 Add an entry to the database to indicate that "Skellington Supplies" (code "TNBC") will provide sprockets (code "1") for 7 cents each.
+INSERT INTO Provides(Piece, Provider, Price) VALUES(1,'TNBC',7);
+
+-- 5.8 Increase all prices by one cent.
+update provides set price = price+1;
+
+-- 5.9 Update the database to reflect that "Susan Calvin Corp." (code "RBT") will not supply bolts (code 4).
+delete from provides where provider = 'RBT' and piece = 4;
+
+-- 5.10 Update the database to reflect that "Susan Calvin Corp." (code "RBT") will not supply any pieces
+    -- (the provider should still remain in the database).
+delete from provides where provider = 'RBT';
+
+
